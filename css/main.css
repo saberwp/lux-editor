@@ -1,0 +1,238 @@
+body {
+
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  position: relative; /* Enable entire body to position the absolute overlays from the editor. */
+
+}
+
+#brand-enforcer-editor-tree {
+
+  overflow-y: scroll;
+  max-height: 60vh;
+  margin: 20px 10px;
+  padding: 0;
+
+}
+
+#brand-enforcer-editor-tree li {
+
+  margin: 2px 0;
+  font-size: 13px;
+
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+
+/* Editor */
+#brand-enforcer-editor {
+
+  top: 32px;
+  height: calc( 100vh - 32px );
+  width: 275px;
+  z-index: 9999;
+  padding: 5px;
+
+}
+
+#brand-enforcer-editor li {
+
+  list-style: none;
+  cursor: pointer;
+
+}
+
+#brand-enforcer-editor li:hover {
+
+  opacity: 0.75;
+
+}
+
+#brand-enforcer-editor label {
+
+  font-size: 9px;
+  font-weight: 500;
+  display: block;
+  margin: 0 0 2px 0;
+
+}
+
+.brand-enforcer-editor-selected {
+
+  font-weight: 800;
+  color: red;
+
+}
+
+#brand-enforcer-editor-header {
+
+  background-color: #FFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -5 -5 0 -5;
+  padding: 2px 4px;
+
+}
+
+#brand-enforcer-editor-collapse-icon {
+
+  width: 20px;
+
+}
+
+#brand-enforcer-editor-logo svg {
+
+  width: 160px;
+
+}
+
+#brand-enforcer-editor-footer {
+
+  background-color: #B0B0B0;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  align-items: center;
+  padding: 3px 5px 3px 6px;
+  box-sizing: border-box;
+  color: #E2E2E2;
+  font-size: 15px;
+  font-weight: 700;
+
+}
+
+#brand-enforcer-editor-footer svg#brand-enforcer-delete-icon {
+
+  width: 15px;
+  fill: #E2E2E2;
+
+}
+
+/* Collapse icon. */
+#brand-enforcer-editor-collapse-icon {
+  cursor: pointer;
+}
+
+#brand-enforcer-editor-collapse-icon:hover path {
+  fill: #BFA6A6;
+}
+
+#brand-enforcer-editor input {
+
+  padding: 0;
+  border: solid 1px #A8A8A8;
+  font-size: 14px;
+
+}
+
+#brand-enforcer-editor-inserter-button {
+  cursor: pointer;
+  text-align: center;
+}
+
+#brand-enforcer-editor-inserter-button svg {
+  width: 200px;
+}
+
+#brand-enforcer-editor-inserter-button:hover path {
+  fill: #BFA6A6;
+}
+
+#brand-enforcer-editor-inserter-selection-display {
+  color: #949494;
+  font-weight: 600;
+  text-align: center;
+  margin: 25px 0 0 0;
+
+}
+
+#brand-enforcer-editor-inserter-confirm-button {
+  display: block;
+  margin: 10px auto;
+  background-color: #BFA6A6;
+  color: #E4E4E4;
+  font-size: 16px;
+  padding: 8px 12px;
+  border: none;
+  border: none;
+}
+
+#brand-enforcer-editor-inserter-confirm-button:hover {
+  opacity: 0.8;
+}
+
+#brand-enforcer-editor-inserter-statement {
+
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+
+
+}
+
+#brand-enforcer-editor-insert-position-choices {
+
+  margin: 10px auto;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+}
+
+#brand-enforcer-editor-insert-position-choices li {
+  padding: 0;
+  margin: 0;
+}
+
+#brand-enforcer-editor-insert-position-choices li.is-selected {
+
+  color: green;
+
+}
+
+#brand-enforcer-inserter-tag-container {
+  text-align: center;
+}
+
+#brand-enforcer-editor-menu {
+  width: 100%;
+  padding: 0;
+  margin: 0 -5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+#brand-enforcer-editor-menu li {
+  background: red;
+  color: #FFF;
+  text-align: center;
+}
+
+#brand-enforcer-editor-styles {
+
+  margin: 20px 0;
+  padding: 0 20px;
+  overflow-y: scroll;
+  max-height: 60vh;
+
+}
+
+#brand-enforcer-edit-element-button {
+  background-color: #BFA6A6;
+  border: none;
+  color: #FAFAFA;
+  text-align: center;
+  margin: 5px 0 10px 0;
+  width: 100%;
+}
+
+#brand-enforcer-edit-element-button:hover {
+  opacity: 0.7;
+}
