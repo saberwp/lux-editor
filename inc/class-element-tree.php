@@ -11,20 +11,21 @@ class ElementTree {
   public function import( $json ) {
 
     $decoded = json_decode( $json );
-    $element         = new Element();
-    $element->id     = $decoded->id;
-    $element->tag    = $decoded->tag;
-    $element->styles = $decoded->styles;
+    $element          = new Element();
+    $element->id      = $decoded->id;
+    $element->tag     = $decoded->tag;
+    $element->styles  = $decoded->styles;
+    $element->content = $decoded->content;
     $this->add( $element );
     $parent_id = $element->id;
 
-    if( isset( $decoded->children ) ) {
+    if( isset( $decoded->elements ) ) {
 
-      foreach( $decoded->children as $child_element ) {
+      foreach( $decoded->elements as $child_element ) {
 
-        $element         = new Element();
-        $element->tag    = $child_element->tag;
-        $element->styles = $child_element->styles;
+        $element          = new Element();
+        $element->tag     = $child_element->tag;
+        $element->styles  = $child_element->styles;
         $element->content = $child_element->content;
         $this->add( $element, $parent_id );
 
@@ -46,13 +47,13 @@ class ElementTree {
 
     $this->element_search_loop( $parent, $this->elements );
 
-    if( ! array_key_exists( 'children', $this->parent ) ) {
+    if( ! array_key_exists( 'elements', $this->parent ) ) {
 
-      $this->parent->children = array();
+      $this->parent->elements = array();
 
     }
 
-    $this->parent->children[] = $element;
+    $this->parent->elements[] = $element;
 
   }
 
@@ -66,9 +67,9 @@ class ElementTree {
 
       }
 
-      if( array_key_exists( 'children', $element ) ) {
+      if( array_key_exists( 'elements', $element ) ) {
 
-        $this->element_search_loop( $element->id, $element->children );
+        $this->element_search_loop( $element->id, $element->elements );
 
       }
 

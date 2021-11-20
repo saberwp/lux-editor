@@ -99,15 +99,22 @@ function brandEnforcerRenderer( elementDefinition, elementParent ) {
 }
 
 /* Do rendering of an ElementTree. */
-brandEnforcerTrees.forEach( function( elementTree ) {
+// Automatic rendering when brandEnforcerTrees available.
+if( undefined !== brandEnforcerTrees ) {
 
-  elementTree.elements.forEach( function( elementDefinition ) {
+  brandEnforcerTrees.forEach( function( elementTree ) {
 
-    brandEnforcerRenderer( elementDefinition, document.getElementById( 'container' ) );
+    console.log( 'trees rendering...')
+
+    elementTree.elements.forEach( function( elementDefinition ) {
+
+      brandEnforcerRenderer( elementDefinition, document.getElementById( 'main' ) );
+
+    });
 
   });
 
-});
+}
 
 // Setup some data storage.
 window.brandEnforcerData = {}

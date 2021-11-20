@@ -272,7 +272,7 @@ function brandEnforcerTreeAdd() {
   // Remove tree if it already exists.
   brandEnforcerTreeRemove();
 
-  targetElement = document.getElementById( 'container' );
+  targetElement = document.getElementById( 'main' );
 
   const treeContainer = document.createElement( 'ul' );
   treeContainer.id = 'brand-enforcer-editor-tree';

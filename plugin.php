@@ -30,7 +30,10 @@ class Plugin {
 
   public function __construct() {
 
-    require_once( get_template_directory() . '/brand_enforcer/inc/post-type-design-element.php' );
+    require_once( BRAND_ENFORCER_PATH . 'inc/post-type-design-element.php' );
+    require_once( BRAND_ENFORCER_PATH . 'inc/class-element-style.php' );
+    require_once( BRAND_ENFORCER_PATH . 'inc/class-element-tree.php' );
+    require_once( BRAND_ENFORCER_PATH . 'inc/class-element.php' );
 
     // AJAX hook to save the Design Element posts.
     add_action( 'wp_ajax_nopriv_brand_enforcer_save_design_element', [ $this, 'save_design_element' ] );
@@ -43,8 +46,32 @@ class Plugin {
         'brand-enforcer-css',
         BRAND_ENFORCER_URL . '/assets/css/main.css',
         array(),
-        '1.0',
-        'all'
+        time(),
+        'all',
+      );
+
+      wp_enqueue_script(
+        'brand-enforcer-parser',
+        BRAND_ENFORCER_URL . '/assets/js/parser.js',
+        array(),
+        time(),
+        true,
+      );
+
+      wp_enqueue_script(
+        'brand-enforcer-editor',
+        BRAND_ENFORCER_URL . '/assets/js/editor.js',
+        array( 'jquery', 'brand-enforcer-parser' ),
+        time(),
+        true,
+      );
+
+      wp_enqueue_script(
+        'brand-enforcer-exporter',
+        BRAND_ENFORCER_URL . '/assets/js/exporter.js',
+        array( 'jquery', 'brand-enforcer-editor' ),
+        time(),
+        true,
       );
 
     });
