@@ -41,7 +41,7 @@ class Plugin {
 
       wp_enqueue_style(
         'brand-enforcer-css',
-        BRAND_ENFORCER_URL . '/css/main.css',
+        BRAND_ENFORCER_URL . '/assets/css/main.css',
         array(),
         '1.0',
         'all'
