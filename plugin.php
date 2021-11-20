@@ -33,20 +33,8 @@ class Plugin {
     require_once( get_template_directory() . '/brand_enforcer/inc/post-type-design-element.php' );
 
     // AJAX hook to save the Design Element posts.
-    add_action( 'wp_ajax_brand_enforcer_save_design_element', function() {
-
-      $json = $_POST['json'];
-
-      $post_id = wp_insert_post(
-        array(
-          'post_type'   => 'design_element',
-          'post_status' => 'publish'
-        )
-      );
-
-      update_post_meta( $post_id, 'json_definition', $json );
-
-    });
+    add_action( 'wp_ajax_nopriv_brand_enforcer_save_design_element', [ $this, 'save_design_element' ] );
+    add_action( 'wp_ajax_brand_enforcer_save_design_element', [ $this, 'save_design_element' ] );
 
     /* Enqueue styles. */
     add_action( 'wp_enqueue_scripts', function() {
@@ -60,6 +48,26 @@ class Plugin {
       );
 
     });
+
+  }
+
+  public function save_design_element() {
+
+    $json = $_POST['json'];
+
+    $post_id = wp_insert_post(
+      array(
+        'post_type'   => 'design_element',
+        'post_status' => 'publish'
+      )
+    );
+
+    update_post_meta( $post_id, 'json_definition', $json );
+
+    $response = new \stdClass;
+    $response->code = 200;
+    print json_encode( $response );
+    die();
 
   }
 
