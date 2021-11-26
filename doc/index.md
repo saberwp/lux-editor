@@ -1,1 +1,1 @@
-# Brand Enforcer
+# LUX Editor

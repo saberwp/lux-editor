@@ -1,11 +1,11 @@
-function brandEnforcerExport() {
+function luxEditorExport() {
 
   console.log( 'doing export...')
-  const elementId = window.brandEnforcerData.editorSelectedItem.elementId;
+  const elementId = window.luxEditorData.editorSelectedItem.elementId;
 
-console.log( window.brandEnforcerData.editorSelectedItem )
+console.log( window.luxEditorData.editorSelectedItem )
 
-  const jsonDef = brandEnforcerFindJsonDefinition( elementId );
+  const jsonDef = luxEditorFindJsonDefinition( elementId );
 
   console.log( jsonDef )
 
@@ -28,9 +28,9 @@ console.log( window.brandEnforcerData.editorSelectedItem )
 
 }
 
-function brandEnforcerExportClickEvent() {
+function luxEditorExportClickEvent() {
 
-  const exportButton = document.getElementById( 'brand-enforcer-editor-export' );
+  const exportButton = document.getElementById( 'lux-editor-editor-export' );
 
   if( ! exportButton ) {
     return;
@@ -39,11 +39,11 @@ function brandEnforcerExportClickEvent() {
   exportButton.addEventListener( 'click', event => {
 
     console.log( 'catching click event export...')
-    brandEnforcerExport()
+    luxEditorExport()
 
   });
 
 }
 
 /* Init. */
-brandEnforcerExportClickEvent();
+luxEditorExportClickEvent();

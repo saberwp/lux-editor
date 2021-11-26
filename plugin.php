@@ -1,12 +1,12 @@
 <?php
 /**
- * @package BrandEnforcer
+ * @package LuxEditor
  */
 
 /**
  *
- * Plugin Name: Brand Enforcer
- * Plugin URI: https://saberwp/wordpress-plugins/brand-enforcer/
+ * Plugin Name: LUX Editor
+ * Plugin URI: https://saberwp/wordpress-plugins/lux-editor/
  * Description: Precise design control system for brand enforcement.
  * Version: 0.0.1
  * Author: SaberWP
@@ -17,59 +17,59 @@
  */
 
 
-namespace BrandEnforcer;
+namespace LuxEditor;
 
-define( 'BRAND_ENFORCER_PLUGIN_NAME', 'Brand Enforcer' );
-define( 'BRAND_ENFORCER_VERSION', '1.0.0' );
-define( 'BRAND_ENFORCER_PATH', plugin_dir_path(__FILE__) );
-define( 'BRAND_ENFORCER_URL', plugin_dir_url(__FILE__) );
-define( 'BRAND_ENFORCER_DEV_MODE', 0 );
-define( 'BRAND_ENFORCER_TEXT_DOMAIN', 'brand-enforcer' );
+define( 'LUX_EDITOR_PLUGIN_NAME', 'LUX Editor' );
+define( 'LUX_EDITOR_VERSION', '1.0.0' );
+define( 'LUX_EDITOR_PATH', plugin_dir_path(__FILE__) );
+define( 'LUX_EDITOR_URL', plugin_dir_url(__FILE__) );
+define( 'LUX_EDITOR_DEV_MODE', 0 );
+define( 'LUX_EDITOR_TEXT_DOMAIN', 'lux-editor' );
 
 class Plugin {
 
   public function __construct() {
 
-    require_once( BRAND_ENFORCER_PATH . 'inc/post-type-design-element.php' );
-    require_once( BRAND_ENFORCER_PATH . 'inc/class-element-style.php' );
-    require_once( BRAND_ENFORCER_PATH . 'inc/class-element-tree.php' );
-    require_once( BRAND_ENFORCER_PATH . 'inc/class-element.php' );
+    require_once( LUX_EDITOR_PATH . 'inc/post-type-design-element.php' );
+    require_once( LUX_EDITOR_PATH . 'inc/class-element-style.php' );
+    require_once( LUX_EDITOR_PATH . 'inc/class-element-tree.php' );
+    require_once( LUX_EDITOR_PATH . 'inc/class-element.php' );
 
     // AJAX hook to save the Design Element posts.
-    add_action( 'wp_ajax_nopriv_brand_enforcer_save_design_element', [ $this, 'save_design_element' ] );
-    add_action( 'wp_ajax_brand_enforcer_save_design_element', [ $this, 'save_design_element' ] );
+    add_action( 'wp_ajax_nopriv_lux_editor_save_design_element', [ $this, 'save_design_element' ] );
+    add_action( 'wp_ajax_lux_editor_save_design_element', [ $this, 'save_design_element' ] );
 
     /* Enqueue styles. */
     add_action( 'wp_enqueue_scripts', function() {
 
       wp_enqueue_style(
-        'brand-enforcer-css',
-        BRAND_ENFORCER_URL . '/assets/css/main.css',
+        'lux-editor-css',
+        LUX_EDITOR_URL . '/assets/css/main.css',
         array(),
         time(),
         'all',
       );
 
       wp_enqueue_script(
-        'brand-enforcer-parser',
-        BRAND_ENFORCER_URL . '/assets/js/parser.js',
+        'lux-editor-parser',
+        LUX_EDITOR_URL . '/assets/js/parser.js',
         array(),
         time(),
         true,
       );
 
       wp_enqueue_script(
-        'brand-enforcer-editor',
-        BRAND_ENFORCER_URL . '/assets/js/editor.js',
-        array( 'jquery', 'brand-enforcer-parser' ),
+        'lux-editor-editor',
+        LUX_EDITOR_URL . '/assets/js/editor.js',
+        array( 'jquery', 'lux-editor-parser' ),
         time(),
         true,
       );
 
       wp_enqueue_script(
-        'brand-enforcer-exporter',
-        BRAND_ENFORCER_URL . '/assets/js/exporter.js',
-        array( 'jquery', 'brand-enforcer-editor' ),
+        'lux-editor-exporter',
+        LUX_EDITOR_URL . '/assets/js/exporter.js',
+        array( 'jquery', 'lux-editor-editor' ),
         time(),
         true,
       );

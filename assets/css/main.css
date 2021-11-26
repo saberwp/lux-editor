@@ -6,7 +6,7 @@ body {
 
 }
 
-#brand-enforcer-editor-tree {
+#lux-editor-editor-tree {
 
   overflow-y: scroll;
   max-height: 60vh;
@@ -15,7 +15,7 @@ body {
 
 }
 
-#brand-enforcer-editor-tree li {
+#lux-editor-editor-tree li {
 
   margin: 2px 0;
   font-size: 13px;
@@ -26,7 +26,7 @@ body {
 
 
 /* Editor */
-#brand-enforcer-editor {
+#lux-editor-editor {
 
   top: 32px;
   height: calc( 100vh - 32px );
@@ -36,20 +36,20 @@ body {
 
 }
 
-#brand-enforcer-editor li {
+#lux-editor-editor li {
 
   list-style: none;
   cursor: pointer;
 
 }
 
-#brand-enforcer-editor li:hover {
+#lux-editor-editor li:hover {
 
   opacity: 0.75;
 
 }
 
-#brand-enforcer-editor label {
+#lux-editor-editor label {
 
   font-size: 9px;
   font-weight: 500;
@@ -58,14 +58,14 @@ body {
 
 }
 
-.brand-enforcer-editor-selected {
+.lux-editor-editor-selected {
 
   font-weight: 800;
   color: red;
 
 }
 
-#brand-enforcer-editor-header {
+#lux-editor-editor-header {
 
   background-color: #FFF;
   display: flex;
@@ -76,19 +76,19 @@ body {
 
 }
 
-#brand-enforcer-editor-collapse-icon {
+#lux-editor-editor-collapse-icon {
 
   width: 20px;
 
 }
 
-#brand-enforcer-editor-logo svg {
+#lux-editor-editor-logo svg {
 
   width: 160px;
 
 }
 
-#brand-enforcer-editor-footer {
+#lux-editor-editor-footer {
 
   background-color: #B0B0B0;
   width: 100%;
@@ -104,7 +104,7 @@ body {
 
 }
 
-#brand-enforcer-editor-footer svg#brand-enforcer-delete-icon {
+#lux-editor-editor-footer svg#lux-editor-delete-icon {
 
   width: 15px;
   fill: #E2E2E2;
@@ -112,15 +112,15 @@ body {
 }
 
 /* Collapse icon. */
-#brand-enforcer-editor-collapse-icon {
+#lux-editor-editor-collapse-icon {
   cursor: pointer;
 }
 
-#brand-enforcer-editor-collapse-icon:hover path {
+#lux-editor-editor-collapse-icon:hover path {
   fill: #BFA6A6;
 }
 
-#brand-enforcer-editor input {
+#lux-editor-editor input {
 
   padding: 0;
   border: solid 1px #A8A8A8;
@@ -128,20 +128,20 @@ body {
 
 }
 
-#brand-enforcer-editor-inserter-button {
+#lux-editor-editor-inserter-button {
   cursor: pointer;
   text-align: center;
 }
 
-#brand-enforcer-editor-inserter-button svg {
+#lux-editor-editor-inserter-button svg {
   width: 200px;
 }
 
-#brand-enforcer-editor-inserter-button:hover path {
+#lux-editor-editor-inserter-button:hover path {
   fill: #BFA6A6;
 }
 
-#brand-enforcer-editor-inserter-selection-display {
+#lux-editor-editor-inserter-selection-display {
   color: #949494;
   font-weight: 600;
   text-align: center;
@@ -149,7 +149,7 @@ body {
 
 }
 
-#brand-enforcer-editor-inserter-confirm-button {
+#lux-editor-editor-inserter-confirm-button {
   display: block;
   margin: 10px auto;
   background-color: #BFA6A6;
@@ -160,11 +160,11 @@ body {
   border: none;
 }
 
-#brand-enforcer-editor-inserter-confirm-button:hover {
+#lux-editor-editor-inserter-confirm-button:hover {
   opacity: 0.8;
 }
 
-#brand-enforcer-editor-inserter-statement {
+#lux-editor-editor-inserter-statement {
 
   font-size: 13px;
   font-weight: 500;
@@ -173,7 +173,7 @@ body {
 
 }
 
-#brand-enforcer-editor-insert-position-choices {
+#lux-editor-editor-insert-position-choices {
 
   margin: 10px auto;
   padding: 0;
@@ -185,22 +185,22 @@ body {
 
 }
 
-#brand-enforcer-editor-insert-position-choices li {
+#lux-editor-editor-insert-position-choices li {
   padding: 0;
   margin: 0;
 }
 
-#brand-enforcer-editor-insert-position-choices li.is-selected {
+#lux-editor-editor-insert-position-choices li.is-selected {
 
   color: green;
 
 }
 
-#brand-enforcer-inserter-tag-container {
+#lux-editor-inserter-tag-container {
   text-align: center;
 }
 
-#brand-enforcer-editor-menu {
+#lux-editor-editor-menu {
   width: 100%;
   padding: 0;
   margin: 0 -5px;
@@ -209,13 +209,13 @@ body {
   gap: 0;
 }
 
-#brand-enforcer-editor-menu li {
+#lux-editor-editor-menu li {
   background: red;
   color: #FFF;
   text-align: center;
 }
 
-#brand-enforcer-editor-styles {
+#lux-editor-editor-styles {
 
   margin: 20px 0;
   padding: 0 20px;
@@ -224,7 +224,7 @@ body {
 
 }
 
-#brand-enforcer-edit-element-button {
+#lux-editor-edit-element-button {
   background-color: #BFA6A6;
   border: none;
   color: #FAFAFA;
@@ -233,6 +233,6 @@ body {
   width: 100%;
 }
 
-#brand-enforcer-edit-element-button:hover {
+#lux-editor-edit-element-button:hover {
   opacity: 0.7;
 }

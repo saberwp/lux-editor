@@ -1,6 +1,6 @@
 <?php
 
-namespace BrandEnforcer;
+namespace LuxEditor;
 
 class Brand {
 

@@ -1,4 +1,4 @@
-function brandEnforcerRenderElement( el, parent ) {
+function luxEditorRenderElement( el, parent ) {
 
   if( ! parent ) {
 
@@ -11,7 +11,7 @@ function brandEnforcerRenderElement( el, parent ) {
 }
 
 // Recursively create an element tree from the JSON definition.
-function brandEnforcerRenderer( elementDefinition, elementParent ) {
+function luxEditorRenderer( elementDefinition, elementParent ) {
 
   // Make the tag element.
   let el = document.createElement( elementDefinition.tag );
@@ -80,7 +80,7 @@ function brandEnforcerRenderer( elementDefinition, elementParent ) {
 
   // Render current element.
   if( elementParent ) {
-    brandEnforcerRenderElement( el, elementParent );
+    luxEditorRenderElement( el, elementParent );
   }
 
   // Recurse over child elements.
@@ -88,7 +88,7 @@ function brandEnforcerRenderer( elementDefinition, elementParent ) {
 
     elementDefinition.elements.forEach( childElementDefinition => {
 
-      brandEnforcerRenderer( childElementDefinition, el );
+      luxEditorRenderer( childElementDefinition, el );
 
     });
 
@@ -99,16 +99,16 @@ function brandEnforcerRenderer( elementDefinition, elementParent ) {
 }
 
 /* Do rendering of an ElementTree. */
-// Automatic rendering when brandEnforcerTrees available.
-if( undefined !== brandEnforcerTrees ) {
+// Automatic rendering when luxEditorTrees available.
+if( undefined !== luxEditorTrees ) {
 
-  brandEnforcerTrees.forEach( function( elementTree ) {
+  luxEditorTrees.forEach( function( elementTree ) {
 
     console.log( 'trees rendering...')
 
     elementTree.elements.forEach( function( elementDefinition ) {
 
-      brandEnforcerRenderer( elementDefinition, document.getElementById( 'main' ) );
+      luxEditorRenderer( elementDefinition, document.getElementById( 'main' ) );
 
     });
 
@@ -117,4 +117,4 @@ if( undefined !== brandEnforcerTrees ) {
 }
 
 // Setup some data storage.
-window.brandEnforcerData = {}
+window.luxEditorData = {}
