@@ -210,9 +210,14 @@ body {
 }
 
 #lux-editor-editor-menu li {
-  background: red;
-  color: #FFF;
+  background: #F3F3F3;
+  color: #949494;
   text-align: center;
+}
+
+#lux-editor-editor-menu li.lux-editor-editor-menu-selected-item {
+  background: #BFA6A6;
+  color: #FFF;
 }
 
 #lux-editor-editor-styles {

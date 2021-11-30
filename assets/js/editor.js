@@ -48,6 +48,7 @@ function luxEditorMenuClickTree() {
       luxEditorStylesRemove();
       luxEditorInserterRemove();
       luxEditorInserterFormRemove();
+      luxEditorTitleFieldRemove();
 
       // Build tree then add click event handler.
       luxEditorTreeAdd();
@@ -78,6 +79,15 @@ function luxEditorMenuClickElement() {
 
     el.addEventListener( 'click', e => {
 
+      /* Add title field. */
+      luxEditorTitleFieldRemove();
+      let titleField = document.createElement( 'input' );
+      titleField.id = 'lux-editor-element-title-field';
+      titleField.placeholder = 'Enter the design element title';
+      titleField.value = luxEditorPostData.title;
+      const editorEl = document.getElementById( 'lux-editor-editor' );
+      editorEl.appendChild( titleField );
+
       luxEditorTreeRemove();
       luxEditorInserterRemove();
       luxEditorSelectElementByDoubleClick();
@@ -85,6 +95,17 @@ function luxEditorMenuClickElement() {
       luxEditorEditElementButtonRemove();
 
     });
+
+  }
+
+}
+
+function luxEditorTitleFieldRemove() {
+
+  const titleFieldExists = document.getElementById( 'lux-editor-element-title-field' );
+  if( titleFieldExists ) {
+
+    titleFieldExists.remove();
 
   }
 
@@ -121,7 +142,7 @@ function luxEditorBuildMenu() {
 
   const el = document.createElement( 'ul' );
   el.id = 'lux-editor-editor-menu';
-  el.innerHTML = '<li id="lux-editor-editor-menu-tree">TREE</li><li id="lux-editor-editor-menu-element">ELEMENT</li>';
+  el.innerHTML = '<li id="lux-editor-editor-menu-tree" class="lux-editor-editor-menu-selected-item">TREE</li><li id="lux-editor-editor-menu-element">ELEMENT</li>';
 
   // Add editor menu to container.
   editorContainer = document.getElementById( 'lux-editor-editor' );
@@ -267,8 +288,6 @@ function luxEditorTreeRemove() {
  */
 function luxEditorTreeAdd() {
 
-  console.log( luxEditorTrees )
-
   // Remove tree if it already exists.
   luxEditorTreeRemove();
 
@@ -284,7 +303,11 @@ function luxEditorTreeAdd() {
   });
 
   const editorBody = document.getElementById( 'lux-editor-editor-body' );
+
   editorBody.appendChild( treeContainer );
+
+  /* Add element inserter. */
+  luxEditorInserterInit();
 
 }
 
@@ -577,7 +600,7 @@ function luxEditorInserterShowForm() {
   inserterFormContainerEl.id = 'lux-editor-editor-inserter-element-form';
 
   // Render current selected tag.
-  if( window.luxEditorData.editorSelectedItem.elementId ) {
+  if( undefined !== window.luxEditorData.editorSelectedItem ) {
     const selectedElementId = window.luxEditorData.editorSelectedItem.elementId;
     const selectedElement   = document.getElementById( selectedElementId );
     const tagSelectionEl = document.createElement( 'div' );
@@ -716,14 +739,12 @@ function luxEditorInserterConfirmButtonEvent() {
 
     console.log( window.luxEditorData.editorSelectedItem )
 
-    if( window.luxEditorData.editorSelectedItem && window.luxEditorData.editorSelectedItem.elementId ) {
+    window.luxEditorData.editorSelectedItem
 
+    // Set target parent element.
+    let targetElementParent = document.getElementById( 'main' );
+    if( undefined !== window.luxEditorData.editorSelectedItem && window.luxEditorData.editorSelectedItem.elementId ) {
       targetElementParent = document.getElementById( window.luxEditorData.editorSelectedItem.elementId );
-
-    } else {
-
-      const targetElementParent = document.body;
-
     }
 
     if( positionChoice === 'before' ) {
@@ -804,6 +825,44 @@ function luxEditorElementDeleterClickEvent() {
 
 }
 
+function luxEditorSaveHandler() {
+
+  setInterval( luxEditorSaveRequest, 10000 );
+
+  function luxEditorSaveRequest() {
+
+    console.log( 'doing autosave...');
+
+    // Get the element.
+    const jsonDef = '';
+
+    console.log( window.luxEditorData.editorSelectedItem );
+
+    if( undefined !== window.luxEditorData.editorSelectedItem ) {
+      const elementId = window.luxEditorData.editorSelectedItem.elementId;
+       luxEditorFindJsonDefinition( elementId );
+    }
+
+    // Get the design element title.
+    const postTitle = document.getElementById( 'lux-editor-element-title-field' ).value;
+
+    const data = {
+      action: 'lux_editor_save_design_element',
+      post: luxEditorSaveId,
+      postTitle: postTitle,
+      json: JSON.stringify( jsonDef )
+    }
+    jQuery.post( luxEditorAjaxUrl, data, function( response ) {
+
+      console.log( 'response from server after save...')
+      console.log( response )
+
+    });
+
+  } /* End save request. */
+
+}
+
 function luxEditorEditorInit() {
 
   const editor = document.getElementById( 'lux-editor-editor' );
@@ -811,11 +870,17 @@ function luxEditorEditorInit() {
 
   luxEditorEditorInitDomElements();
 
+  console.log( 'init editor...')
+
   // Build tree then add click event handler.
   luxEditorTreeAdd();
+
   luxEditorTreeItemClickEvent();
 
   luxEditorElementDeleterClickEvent();
+
+  // Init autosave.
+  luxEditorSaveHandler();
 
 }
 

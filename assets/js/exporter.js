@@ -1,25 +1,17 @@
 function luxEditorExport() {
 
-  console.log( 'doing export...')
   const elementId = window.luxEditorData.editorSelectedItem.elementId;
 
-console.log( window.luxEditorData.editorSelectedItem )
-
+  // Get JSON definition by ElementId.
   const jsonDef = luxEditorFindJsonDefinition( elementId );
-
-  console.log( jsonDef )
-
   const exportEl = document.createElement( 'pre' );
   exportEl.innerHTML = JSON.stringify( jsonDef, undefined, 2 );
 
-  const containerEl = document.getElementById( 'container' );
-  containerEl.appendChild( exportEl );
-
   const data = {
-    action: 'brand_enforcer_save_design_element',
+    action: 'lux_editor_save_design_element',
     json: JSON.stringify( jsonDef )
   }
-  jQuery.post( ajaxurl, data, function( response ) {
+  jQuery.post( luxEditorAjaxUrl, data, function( response ) {
 
     console.log( 'response from server after save...')
     console.log( response )

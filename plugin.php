@@ -42,6 +42,11 @@ class Plugin {
     /* Enqueue styles. */
     add_action( 'wp_enqueue_scripts', function() {
 
+      // Only add editor to the Design Element single posts.
+      if( ! is_singular( 'design_element' ) ) {
+    		return;
+    	}
+
       wp_enqueue_style(
         'lux-editor-css',
         LUX_EDITOR_URL . '/assets/css/main.css',
@@ -74,18 +79,54 @@ class Plugin {
         true,
       );
 
+      // Localize design element JSON.
+      global $post;
+      $json = get_post_meta( $post->ID, 'json_definition', 1 );
+      $element_tree = new \LuxEditor\ElementTree();
+      $element_tree->import( $json );
+
+      $post_data = array(
+        'title' => $post->post_title,
+      );
+
+      wp_localize_script( 'lux-editor-parser', 'luxEditorTrees', array( $element_tree ) );
+      wp_localize_script( 'lux-editor-editor', 'luxEditorSaveId', $post->ID );
+      wp_localize_script( 'lux-editor-editor', 'luxEditorPostData', $post_data );
+      wp_localize_script( 'lux-editor-editor', 'luxEditorAjaxUrl', admin_url('admin-ajax.php') );
+
     });
+
+    /* Single post template override. */
+    add_filter( 'template_include', function( $template ) {
+
+      if( is_singular( 'design_element' ) ) {
+    		return LUX_EDITOR_PATH . 'templates/single-design_element.php';
+    	}
+
+      return $template;
+
+    }, 99 );
 
   }
 
   public function save_design_element() {
 
-    $json = $_POST['json'];
+    $post_id    = $_POST['post'];
+    $post_title = $_POST['postTitle'];
+    $json       = $_POST['json'];
 
+    /**
+     * Please move me, I make new design element post!
     $post_id = wp_insert_post(
       array(
         'post_type'   => 'design_element',
         'post_status' => 'publish'
+      )
+    );
+    */
+    wp_update_post( array(
+        'ID'         => $post_id,
+        'post_title' => $post_title
       )
     );
 

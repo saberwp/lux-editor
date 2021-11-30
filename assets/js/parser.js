@@ -29,7 +29,8 @@ function luxEditorRenderer( elementDefinition, elementParent ) {
   }
 
   // Parse the styles.
-  if( elementDefinition.hasOwnProperty( 'styles' ) && elementDefinition.styles.length > 0 ) {
+  console.log( elementDefinition.styles )
+  if( elementDefinition.hasOwnProperty( 'styles' ) && null !== elementDefinition.styles && elementDefinition.styles.length > 0 ) {
 
     elementDefinition.styles.forEach( style => {
 
@@ -101,6 +102,8 @@ function luxEditorRenderer( elementDefinition, elementParent ) {
 /* Do rendering of an ElementTree. */
 // Automatic rendering when luxEditorTrees available.
 if( undefined !== luxEditorTrees ) {
+
+  console.log( luxEditorTrees );
 
   luxEditorTrees.forEach( function( elementTree ) {
 
