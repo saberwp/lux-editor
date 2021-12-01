@@ -1,5 +1,8 @@
 function luxEditorExport() {
 
+  console.log( window.luxEditorData )
+  console.log( luxEditorTrees )
+
   const elementId = window.luxEditorData.editorSelectedItem.elementId;
 
   // Get JSON definition by ElementId.
@@ -21,6 +24,8 @@ function luxEditorExport() {
 }
 
 function luxEditorExportClickEvent() {
+
+  console.log( 'adding export click event')
 
   const exportButton = document.getElementById( 'lux-editor-editor-export' );
 

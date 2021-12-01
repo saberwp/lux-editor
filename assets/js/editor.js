@@ -105,6 +105,7 @@ function luxEditorTitleFieldRemove() {
   const titleFieldExists = document.getElementById( 'lux-editor-element-title-field' );
   if( titleFieldExists ) {
 
+    luxEditorPostData.title = titleFieldExists.value; // Stash value before removing.
     titleFieldExists.remove();
 
   }
@@ -272,9 +273,8 @@ function luxEditorStylesRemove() {
 
 }
 
+/* Remove the element tree. */
 function luxEditorTreeRemove() {
-
-  console.log( 'removing tree...')
 
   const editorTree = document.getElementById( 'lux-editor-editor-tree' );
   if( editorTree ) {
@@ -337,7 +337,6 @@ function luxEditorTreeParseJsonElementsRecursive( elements, treeContainer ) {
 /**
  * Styles Handling Functions.
  */
-
 function luxEditorGetSupportedCssProperties() {
 
    return [
@@ -348,6 +347,9 @@ function luxEditorGetSupportedCssProperties() {
      'font-family',
      'font-size',
      'color',
+     'width',
+     'max-width',
+     'height',
    ];
 
  }
@@ -381,8 +383,6 @@ function luxEditorBuildStyleInputs( jsonElement ) {
   const cssProps = luxEditorGetSupportedCssProperties();
 
   const elementStylesObject = luxEditorStylesConvertElementArrayToObject( jsonElement.styles );
-
-  console.log( elementStylesObject )
 
   cssProps.forEach( property => {
 
@@ -457,8 +457,6 @@ function luxEditorSaveStyle( event ) {
   if( undefined !== jsonElementMatch.styles ) {
     jsonElementMatch.styles.forEach( ( style, index ) => {
 
-      console.log( style )
-
       if( targetSelector === style.selector ) {
 
         jsonElementMatch.styles[ index ] = {
@@ -474,9 +472,7 @@ function luxEditorSaveStyle( event ) {
   }
 
   // If style did not already we create it here.
-  console.log( jsonElementMatch.styles )
   if( undefined === jsonElementMatch.styles ) {
-    console.log( 456 )
     jsonElementMatch.styles = [];
   }
   if( ! updatedExistedStyle ) {
@@ -493,12 +489,7 @@ function luxEditorSaveStyle( event ) {
   const targetEl = document.getElementById( targetId );
   const targetParentEl = targetEl.parentNode;
 
-  console.log( targetParentEl )
-
   targetReplacementEl = luxEditorRenderer( jsonElementMatch );
-
-  console.log( targetReplacementEl )
-
   targetParentEl.replaceChild( targetReplacementEl, targetEl );
 
   // targetEl.remove();
@@ -533,7 +524,6 @@ function luxEditorFindJsonDefinitionRecursive( elements, targetId ) {
 
     if( targetId === element.id ) {
 
-      console.log( 'found match' );
       jsonElementMatch = element;
 
     }
@@ -553,16 +543,12 @@ function luxEditorElementSelection( elementId, editorItem ) {
 
   const currentSelectedElements = document.querySelectorAll( '.lux-editor-editor-selected' );
 
-  console.log( currentSelectedElements )
-
   currentSelectedElements.forEach( selectedElement => {
     selectedElement.classList.remove('lux-editor-editor-selected');
   });
 
   // Add selected class to the editor item clicked.
   editorItem.className = 'lux-editor-editor-selected';
-
-  console.log( window.luxEditorData );
 
   window.luxEditorData.editorSelectedItem = {
     elementId: elementId,
@@ -643,16 +629,10 @@ function luxEditorInserterShowForm() {
 
 function luxEditorInserterPositionChoicesClickEvent() {
 
-  console.log('calling luxEditorInserterPositionChoicesClickEvent()...')
-
   const els = document.querySelectorAll( '#lux-editor-editor-insert-position-choices li' );
-
-  console.log( els )
 
   els.forEach( el => {
     el.addEventListener( 'click', event => {
-
-      console.log('clicking position selector...')
 
       const currentSelected = document.querySelector( '#lux-editor-editor-insert-position-choices li.is-selected' );
       if( currentSelected ) {
@@ -728,7 +708,6 @@ function luxEditorInserterConfirmButtonEvent() {
     const insertTag = document.getElementById( 'lux-editor-tag-input' ).value;
     if( insertTag === 'text' ) {
       newEl = document.createTextNode( 'Test123' );
-      console.log( newEl )
     } else {
       newEl = document.createElement( insertTag );
       newEl.id                        = 'new-element-1';
@@ -736,8 +715,6 @@ function luxEditorInserterConfirmButtonEvent() {
       newEl.style['padding']          = '40px';
       newEl.style['background-color'] = 'blue';
     }
-
-    console.log( window.luxEditorData.editorSelectedItem )
 
     window.luxEditorData.editorSelectedItem
 
@@ -786,6 +763,9 @@ function luxEditorInserterConfirmButtonEvent() {
     // Rebuild the tree in the editor so the new element is shown.
     luxEditorEditorInit();
 
+    // Move this to exporter.js and use event trigger for editor rebuild.
+    luxEditorExportClickEvent();
+
     // Set the new element as the current target selection.
     const treeItemMatcherString = '#lux-editor-editor-tree li[data-target*="' + newEl.id + '"]';
     window.luxEditorData.editorSelectedItem = {
@@ -813,12 +793,7 @@ function luxEditorElementDeleterClickEvent() {
   const el = document.getElementById( 'lux-editor-delete-icon' );
   el.addEventListener( 'click', event => {
 
-    console.log('delete click...')
-
     const selectedElement = document.getElementById( window.luxEditorData.editorSelectedItem.elementId );
-
-    console.log( selectedElement )
-
     selectedElement.remove();
 
   });
@@ -831,20 +806,21 @@ function luxEditorSaveHandler() {
 
   function luxEditorSaveRequest() {
 
-    console.log( 'doing autosave...');
-
     // Get the element.
-    const jsonDef = '';
-
-    console.log( window.luxEditorData.editorSelectedItem );
+    let jsonDef = '';
 
     if( undefined !== window.luxEditorData.editorSelectedItem ) {
       const elementId = window.luxEditorData.editorSelectedItem.elementId;
-       luxEditorFindJsonDefinition( elementId );
+      jsonDef = luxEditorFindJsonDefinition( elementId );
     }
 
     // Get the design element title.
-    const postTitle = document.getElementById( 'lux-editor-element-title-field' ).value;
+    const titleField = document.getElementById( 'lux-editor-element-title-field' );
+    if( titleField ) {
+      postTitle = value;
+    } else {
+      postTitle = luxEditorPostData.title;
+    }
 
     const data = {
       action: 'lux_editor_save_design_element',
