@@ -1,11 +1,3 @@
-body {
-
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  position: relative; /* Enable entire body to position the absolute overlays from the editor. */
-
-}
-
 #lux-editor-editor-tree {
 
   overflow-y: scroll;
@@ -51,10 +43,12 @@ body {
 
 #lux-editor-editor label {
 
-  font-size: 9px;
+  font-size: 12px;
+  line-height: normal;
   font-weight: 500;
   display: block;
-  margin: 0 0 2px 0;
+  margin: 0;
+  overflow: hidden;
 
 }
 
@@ -122,10 +116,15 @@ body {
 
 #lux-editor-editor input {
 
-  padding: 0;
-  border: solid 1px #A8A8A8;
+  padding: 2px;
+  border: none;
   font-size: 14px;
+  width: 100%;
 
+}
+
+#lux-editor-editor input:focus {
+  outline: none;
 }
 
 #lux-editor-editor-inserter-button {
@@ -240,4 +239,14 @@ body {
 
 #lux-editor-edit-element-button:hover {
   opacity: 0.7;
+}
+
+#lux-editor-editor-body h2 {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+.lux-editor-styles-input-group {
+  margin: 16px 0;
 }

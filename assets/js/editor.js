@@ -38,8 +38,6 @@ function luxEditorMenuClickTree() {
 
   const el = document.getElementById( 'lux-editor-editor-menu-tree' );
 
-  console.log( el )
-
   if( el ) {
 
     el.addEventListener( 'click', e => {
@@ -73,8 +71,6 @@ function luxEditorMenuClickElement() {
 
   const el = document.getElementById( 'lux-editor-editor-menu-element' );
 
-  console.log( el )
-
   if( el ) {
 
     el.addEventListener( 'click', e => {
@@ -90,7 +86,6 @@ function luxEditorMenuClickElement() {
 
       luxEditorTreeRemove();
       luxEditorInserterRemove();
-      luxEditorSelectElementByDoubleClick();
       luxEditorInserterFormRemove();
       luxEditorEditElementButtonRemove();
 
@@ -151,6 +146,7 @@ function luxEditorBuildMenu() {
 
 }
 
+/* Remove this function after moving functionality to the expand/hide editor button. */
 function luxEditorSelectElementByDoubleClick() {
 
   window.addEventListener( 'dblclick', event => {
@@ -206,38 +202,6 @@ function luxEditorTreeItemClickEvent() {
       /* Add element inserter. */
       luxEditorInserterInit();
 
-      /* Add style inputs. */
-
-      /*
-      luxEditorStylesRemove();
-      const styleInputs = luxEditorBuildStyleInputs( jsonElementMatch );
-      const editorBodyEl = document.getElementById( 'lux-editor-editor-body' );
-      editorBodyEl.appendChild( styleInputs );
-      luxEditorStyleInputBlur(); // Attach blur event to process inputs.
-      */
-
-      // luxEditorTreeRemove();
-
-      // Add overlay to highlight edited element.
-      /*
-      const containerEl = document.getElementById( 'container' );
-      const overlayEl = document.createElement( 'div' );
-      overlayEl.id = 'lux-editor-editor-selection';
-      overlayEl.style['background-color'] = 'blue';
-      overlayEl.style['position'] = 'absolute';
-      overlayEl.style['top']    = targetPosition.y + body.scrollTop;
-      overlayEl.style['left']   = targetPosition.x;
-      overlayEl.style['width']  = targetPosition.width;
-      overlayEl.style['height'] = targetPosition.height;
-      overlayEl.style['opacity'] = '0.15';
-
-      if( existingOverlay = document.getElementById( 'lux-editor-editor-selection' ) ) {
-        existingOverlay.remove();
-      }
-
-      containerEl.appendChild( overlayEl );
-      */
-
     });
 
   });
@@ -291,7 +255,7 @@ function luxEditorTreeAdd() {
   // Remove tree if it already exists.
   luxEditorTreeRemove();
 
-  targetElement = document.getElementById( 'main' );
+  targetElement = document.getElementById( 'lux-editor-canvas' );
 
   const treeContainer = document.createElement( 'ul' );
   treeContainer.id = 'lux-editor-editor-tree';
@@ -377,8 +341,14 @@ function luxEditorStylesConvertElementArrayToObject( styles ) {
 
 function luxEditorBuildStyleInputs( jsonElement ) {
 
+  // Style container element.
   const container = document.createElement( 'div' );
   container.id = 'lux-editor-editor-styles';
+
+  // Styles heading element.
+  const stylesHeadingEl = document.createElement( 'h2' );
+  stylesHeadingEl.innerHTML = 'Styles';
+  container.appendChild( stylesHeadingEl );
 
   const cssProps = luxEditorGetSupportedCssProperties();
 
@@ -392,15 +362,14 @@ function luxEditorBuildStyleInputs( jsonElement ) {
       propertyCurrentValue = elementStylesObject[property]['value'];
     }
 
-
-
     // Add group div.
     const groupDiv = document.createElement( 'div' );
+    groupDiv.className = 'lux-editor-styles-input-group';
     groupDiv.id = property + '-input';
 
     // Add the label.
     const label = document.createElement( 'label' );
-    label.setAttribute( 'for', 'whatever' );
+    label.setAttribute( 'for', jsonElement.id );
     label.innerHTML = property;
 
     // Add the input.
@@ -710,20 +679,19 @@ function luxEditorInserterConfirmButtonEvent() {
       newEl = document.createTextNode( 'Test123' );
     } else {
       newEl = document.createElement( insertTag );
-      newEl.id                        = 'new-element-1';
+      newEl.id                        = luxEditorIdentifierGenerate();
       newEl.innerHTML                 = 'New Element';
       newEl.style['padding']          = '40px';
       newEl.style['background-color'] = 'blue';
     }
 
-    window.luxEditorData.editorSelectedItem
-
     // Set target parent element.
-    let targetElementParent = document.getElementById( 'main' );
+    let targetElementParent = document.getElementById( 'lux-editor-canvas' );
     if( undefined !== window.luxEditorData.editorSelectedItem && window.luxEditorData.editorSelectedItem.elementId ) {
       targetElementParent = document.getElementById( window.luxEditorData.editorSelectedItem.elementId );
     }
 
+    // Do DOM insert relative to the parent (before, after, inside).
     if( positionChoice === 'before' ) {
       const newElementParent = targetElementParent.parentNode;
       newElementParent.insertBefore( newEl, targetElementParent );
@@ -738,27 +706,22 @@ function luxEditorInserterConfirmButtonEvent() {
       targetElementParent.appendChild( newEl );
     }
 
-
     // Stash the new element into the data JSON.
-    const elementTree = {
-      elements: [
+    const element = {
+      tag: insertTag,
+      id: newEl.id,
+      styles: [
         {
-          tag: insertTag,
-          id: newEl.id,
-          styles: [
-            {
-              selector: 'padding',
-              value: '40px'
-            },
-            {
-              selector: 'background-color',
-              value: 'blue'
-            },
-          ]
-        }
+          selector: 'padding',
+          value: '40px'
+        },
+        {
+          selector: 'background-color',
+          value: 'blue'
+        },
       ]
     }
-    luxEditorTrees.push( elementTree );
+    luxEditorStoreElement( element, targetElementParent, positionChoice );
 
     // Rebuild the tree in the editor so the new element is shown.
     luxEditorEditorInit();
@@ -774,6 +737,81 @@ function luxEditorInserterConfirmButtonEvent() {
     }
 
   });
+
+}
+
+function luxEditorIdentifierGenerate() {
+
+  const prefix = 'new-element-';
+  let test = 1;
+
+  while ( null !== document.getElementById( prefix + test ) ) {
+
+    test++
+
+  }
+
+  return prefix + test;
+
+}
+
+function luxEditorStoreElement( newElement, parent, position ) {
+
+  console.log( parent )
+  console.log( luxEditorTrees );
+
+  // Add new tree.
+  if( 'lux-editor-canvas' === parent.id ) {
+    const tree = {
+      elements: [
+        newElement
+      ]
+    };
+    luxEditorTrees.push( tree );
+  }
+
+  // Add as child element.
+  luxEditorTrees.every( elementTree => {
+
+    jsonElementMatch = luxEditorStoreElementRecursive( elementTree.elements, parent.id, newElement, position );
+    if( jsonElementMatch ) {
+      return false;
+    }
+
+    return true;
+
+  });
+
+  console.log( luxEditorTrees );
+
+}
+
+function luxEditorStoreElementRecursive( elements, targetId, newElement, position ) {
+
+  let jsonElementMatch = false;
+  elements.forEach( element => {
+
+    if( targetId === element.id ) {
+
+      jsonElementMatch = element;
+
+      // Add element to array.
+      if( ! element.hasOwnProperty( 'elements' ) ) {
+        element.elements = [];
+      }
+      element.elements.push( newElement );
+
+      // @todo support position before and after.
+
+    }
+
+    if( ! jsonElementMatch && undefined !== element.elements && element.elements.length > 0 ) {
+      jsonElementMatch = luxEditorFindJsonDefinitionRecursive( element.elements, targetId );
+    }
+
+  });
+
+  return jsonElementMatch;
 
 }
 
@@ -845,8 +883,6 @@ function luxEditorEditorInit() {
   if( editor ) { editor.remove(); }
 
   luxEditorEditorInitDomElements();
-
-  console.log( 'init editor...')
 
   // Build tree then add click event handler.
   luxEditorTreeAdd();
