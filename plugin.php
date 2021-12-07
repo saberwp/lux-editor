@@ -83,13 +83,8 @@ class Plugin {
       global $post;
       $json = get_post_meta( $post->ID, 'json_definition', 1 );
       $json_def = json_decode( $json );
-
-      var_dump( $post->ID );
-      var_dump( $json );
-      var_dump( $json_def );
-      // die();
-
       $element_tree = new \LuxEditor\ElementTree();
+
       $element_tree->set_title( $post->post_title );
       if( ! is_array( $json_def->elements ) || count( $json_def->elements ) < 1 || $json_def->elements[0]->tag === 'null' ) {
 

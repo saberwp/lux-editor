@@ -12,24 +12,40 @@ class ElementTree {
   public function import( $json ) {
 
     $this->empty = false;
+    $parent_id   = false;
 
     $decoded = json_decode( $json );
-    $element          = new Element();
-    $element->id      = $decoded->id;
-    $element->tag     = $decoded->tag;
-    $element->styles  = $decoded->styles;
-    $element->content = $decoded->content;
-    $this->add( $element );
+
+    // Add upper level tag if valid.
+    if( $decoded->tag ) {
+
+      $element          = new Element();
+      $element->id      = $decoded->id;
+      $element->tag     = $decoded->tag;
+      $element->styles  = $decoded->styles;
+      $element->content = $decoded->content;
+      $this->add( $element );
+
+      // Set parent ID for nesting other elements.
+      $parent_id = $decoded->id;
+
+    }
+
     $parent_id = $element->id;
 
     if( isset( $decoded->elements ) && ! empty( $decoded->elements ) ) {
 
       foreach( $decoded->elements as $child_element ) {
 
+        if( $child_element->tag === null ) {
+          continue; // Skip null tags.
+        }
+
         $element          = new Element();
         $element->tag     = $child_element->tag;
         $element->styles  = $child_element->styles;
         $element->content = $child_element->content;
+
         $this->add( $element, $parent_id );
 
       }
