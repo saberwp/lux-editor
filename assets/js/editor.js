@@ -471,11 +471,22 @@ function luxEditorFindJsonDefinition( targetId ) {
   }
 
   let jsonElementMatch = false;
+
   luxEditorData.elementTree.elements.every( element => {
 
-    jsonElementMatch = luxEditorFindJsonDefinitionRecursive( element.elements, targetId );
-    if( jsonElementMatch ) {
-      return false;
+    // Try to match the current element.
+    if( element.id === targetId ) {
+      jsonElementMatch = element;
+    }
+
+    // Current element did not match, try to recurse over child elements.
+    if( undefined !== element.elements && element.elements.length >= 1 ) {
+
+      jsonElementMatch = luxEditorFindJsonDefinitionRecursive( element.elements, targetId );
+      if( jsonElementMatch ) {
+        return false;
+      }
+
     }
 
     return true;
@@ -489,6 +500,12 @@ function luxEditorFindJsonDefinition( targetId ) {
 function luxEditorFindJsonDefinitionRecursive( elements, targetId ) {
 
   let jsonElementMatch = false;
+
+  // Exit earlier if we don't have a valid array of elements.
+  if( undefined === elements ) {
+    return jsonElementMatch;
+  }
+
   elements.forEach( element => {
 
     if( targetId === element.id ) {
@@ -844,6 +861,10 @@ function luxEditorSaveHandler() {
     } else {
       postTitle = luxEditorPostData.title;
     }
+
+    // Debug element tree save.
+    console.log( 'JSON right before stringify and save:' );
+    console.log( luxEditorData.elementTree )
 
     const data = {
       action: 'lux_editor_save_design_element',

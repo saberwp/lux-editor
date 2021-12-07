@@ -31,9 +31,6 @@ class Plugin {
   public function __construct() {
 
     require_once( LUX_EDITOR_PATH . 'inc/post-type-design-element.php' );
-    require_once( LUX_EDITOR_PATH . 'inc/class-element-style.php' );
-    require_once( LUX_EDITOR_PATH . 'inc/class-element-tree.php' );
-    require_once( LUX_EDITOR_PATH . 'inc/class-element.php' );
 
     // AJAX hook to save the Design Element posts.
     add_action( 'wp_ajax_nopriv_lux_editor_save_design_element', [ $this, 'save_design_element' ] );
@@ -82,28 +79,12 @@ class Plugin {
       // Localize design element JSON.
       global $post;
       $json = get_post_meta( $post->ID, 'json_definition', 1 );
-      $json_def = json_decode( $json );
-      $element_tree = new \LuxEditor\ElementTree();
-
-      $element_tree->set_title( $post->post_title );
-      if( ! is_array( $json_def->elements ) || count( $json_def->elements ) < 1 || $json_def->elements[0]->tag === 'null' ) {
-
-        // No elements for tree...
-        $element_tree->set_empty();
-
-      } else {
-
-        $element_tree->import( $json );
-
-      }
-
-      var_dump( $element_tree );
 
       $post_data = array(
         'title' => $post->post_title,
       );
 
-      wp_localize_script( 'lux-editor-parser', 'luxEditorData', array( 'elementTree' => $element_tree ) );
+      wp_localize_script( 'lux-editor-parser', 'luxEditorData', array( 'elementTree' => $json ) );
       wp_localize_script( 'lux-editor-editor', 'luxEditorSaveId', $post->ID );
       wp_localize_script( 'lux-editor-editor', 'luxEditorPostData', $post_data );
       wp_localize_script( 'lux-editor-editor', 'luxEditorAjaxUrl', admin_url('admin-ajax.php') );
