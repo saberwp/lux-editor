@@ -17,7 +17,7 @@ class ElementTree {
     $decoded = json_decode( $json );
 
     // Add upper level tag if valid.
-    if( $decoded->tag ) {
+    if( $decoded->tag && $decoded->id ) {
 
       $element          = new Element();
       $element->id      = $decoded->id;
@@ -37,11 +37,12 @@ class ElementTree {
 
       foreach( $decoded->elements as $child_element ) {
 
-        if( $child_element->tag === null ) {
+        if( $child_element->tag === null || $child_element->id === '' || ! $child_element->id ) {
           continue; // Skip null tags.
         }
 
         $element          = new Element();
+        $element->set_id( $child_element->id );
         $element->tag     = $child_element->tag;
         $element->styles  = $child_element->styles;
         $element->content = $child_element->content;

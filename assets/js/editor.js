@@ -184,8 +184,6 @@ function luxEditorTreeItemClickEvent() {
 
       // Record the element selection.
       luxEditorElementSelection( targetId, event.target );
-
-      const targetPosition = targetEl.getBoundingClientRect();
       const jsonElementMatch = luxEditorFindJsonDefinition( targetId );
 
       /* Add element edit button. */
@@ -260,10 +258,7 @@ function luxEditorTreeAdd() {
   const treeContainer = document.createElement( 'ul' );
   treeContainer.id = 'lux-editor-editor-tree';
 
-  console.log( luxEditorData.elementTree )
-
   if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
-    console.log( treeContainer )
     luxEditorTreeParseJsonElementsRecursive( luxEditorData.elementTree.elements, treeContainer );
   }
 
@@ -470,6 +465,10 @@ function luxEditorSaveStyle( event ) {
 // Element ID is needed to search the entire JSON tree.
 // We're returning the original object here, not a copy.
 function luxEditorFindJsonDefinition( targetId ) {
+
+  if( 'undefined' === targetId ) {
+    return false;
+  }
 
   let jsonElementMatch = false;
   luxEditorData.elementTree.elements.every( element => {
