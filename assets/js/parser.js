@@ -105,9 +105,6 @@ function luxEditorRenderer( elementDefinition, elementParent ) {
 // Automatic rendering when luxEditorTree available.
 if( undefined !== luxEditorData.elementTree ) {
 
-  console.log( 'auto parsing here...' )
-  console.log( luxEditorData )
-
   if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
 
     luxEditorData.elementTree.elements.forEach( function( elementDefinition ) {

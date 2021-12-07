@@ -260,9 +260,10 @@ function luxEditorTreeAdd() {
   const treeContainer = document.createElement( 'ul' );
   treeContainer.id = 'lux-editor-editor-tree';
 
-  console.log( luxEditorData.elementTree );
+  console.log( luxEditorData.elementTree )
 
-  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.length > 0 ) {
+  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
+    console.log( treeContainer )
     luxEditorTreeParseJsonElementsRecursive( luxEditorData.elementTree.elements, treeContainer );
   }
 
@@ -757,17 +758,12 @@ function luxEditorIdentifierGenerate() {
 
 function luxEditorStoreElement( newElement, parent, position ) {
 
-  console.log( parent );
   if( 'lux-editor-canvas' === parent.id ) {
-
-    console.log( luxEditorData )
 
     // Init elements array if not already defined at elementTree root.
     if( undefined === luxEditorData.elementTree.elements ) {
       luxEditorData.elementTree.elements = [];
     }
-
-    console.log( luxEditorData.elementTree.elements )
 
     // Store at top level.
     luxEditorData.elementTree.elements.push( newElement );
@@ -858,8 +854,7 @@ function luxEditorSaveHandler() {
     }
     jQuery.post( luxEditorAjaxUrl, data, function( response ) {
 
-      console.log( 'response from server after save...')
-      console.log( response )
+
 
     });
 
