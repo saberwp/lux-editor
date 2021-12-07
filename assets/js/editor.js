@@ -260,11 +260,11 @@ function luxEditorTreeAdd() {
   const treeContainer = document.createElement( 'ul' );
   treeContainer.id = 'lux-editor-editor-tree';
 
-  luxEditorTrees.forEach( elementTree => {
+  console.log( luxEditorData.elementTree );
 
-    luxEditorTreeParseJsonElementsRecursive( elementTree.elements, treeContainer );
-
-  });
+  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.length > 0 ) {
+    luxEditorTreeParseJsonElementsRecursive( luxEditorData.elementTree.elements, treeContainer );
+  }
 
   const editorBody = document.getElementById( 'lux-editor-editor-body' );
 
@@ -471,9 +471,9 @@ function luxEditorSaveStyle( event ) {
 function luxEditorFindJsonDefinition( targetId ) {
 
   let jsonElementMatch = false;
-  luxEditorTrees.every( elementTree => {
+  luxEditorData.elementTree.elements.every( element => {
 
-    jsonElementMatch = luxEditorFindJsonDefinitionRecursive( elementTree.elements, targetId );
+    jsonElementMatch = luxEditorFindJsonDefinitionRecursive( element.elements, targetId );
     if( jsonElementMatch ) {
       return false;
     }
@@ -757,38 +757,36 @@ function luxEditorIdentifierGenerate() {
 
 function luxEditorStoreElement( newElement, parent, position ) {
 
-  console.log( parent )
-  console.log( luxEditorTrees );
-
-  // Add new tree.
+  console.log( parent );
   if( 'lux-editor-canvas' === parent.id ) {
-    const tree = {
-      elements: [
-        newElement
-      ]
-    };
-    luxEditorTrees.push( tree );
-  }
 
-  // Add as child element.
-  luxEditorTrees.every( elementTree => {
+    console.log( luxEditorData )
 
-    jsonElementMatch = luxEditorStoreElementRecursive( elementTree.elements, parent.id, newElement, position );
-    if( jsonElementMatch ) {
-      return false;
+    // Init elements array if not already defined at elementTree root.
+    if( undefined === luxEditorData.elementTree.elements ) {
+      luxEditorData.elementTree.elements = [];
     }
 
-    return true;
+    console.log( luxEditorData.elementTree.elements )
 
-  });
+    // Store at top level.
+    luxEditorData.elementTree.elements.push( newElement );
 
-  console.log( luxEditorTrees );
+  }
+
+  // Parent is not the top level so we loop over elements to find it.
+  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
+
+    let jsonElementMatch = luxEditorStoreElementRecursive( luxEditorData.elementTree.elements, parent.id, newElement, position );
+
+  }
 
 }
 
 function luxEditorStoreElementRecursive( elements, targetId, newElement, position ) {
 
   let jsonElementMatch = false;
+
   elements.forEach( element => {
 
     if( targetId === element.id ) {
@@ -844,14 +842,6 @@ function luxEditorSaveHandler() {
 
   function luxEditorSaveRequest() {
 
-    // Get the element.
-    let jsonDef = '';
-
-    if( undefined !== window.luxEditorData.editorSelectedItem ) {
-      const elementId = window.luxEditorData.editorSelectedItem.elementId;
-      jsonDef = luxEditorFindJsonDefinition( elementId );
-    }
-
     // Get the design element title.
     const titleField = document.getElementById( 'lux-editor-element-title-field' );
     if( titleField ) {
@@ -864,7 +854,7 @@ function luxEditorSaveHandler() {
       action: 'lux_editor_save_design_element',
       post: luxEditorSaveId,
       postTitle: postTitle,
-      json: JSON.stringify( jsonDef )
+      json: JSON.stringify( luxEditorData.elementTree )
     }
     jQuery.post( luxEditorAjaxUrl, data, function( response ) {
 

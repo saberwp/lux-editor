@@ -7,8 +7,11 @@ class ElementTree {
   public $title = '';
   public $elements = array();
   public $parent;
+  public $is_empty = true;
 
   public function import( $json ) {
+
+    $this->empty = false;
 
     $decoded = json_decode( $json );
     $element          = new Element();
@@ -19,7 +22,7 @@ class ElementTree {
     $this->add( $element );
     $parent_id = $element->id;
 
-    if( isset( $decoded->elements ) ) {
+    if( isset( $decoded->elements ) && ! empty( $decoded->elements ) ) {
 
       foreach( $decoded->elements as $child_element ) {
 
@@ -32,6 +35,18 @@ class ElementTree {
       }
 
     }
+
+  }
+
+  public function set_empty() {
+
+    $this->is_empty = true;
+
+  }
+
+  public function set_title( $title ) {
+
+    $this->title = $title;
 
   }
 

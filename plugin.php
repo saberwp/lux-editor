@@ -82,14 +82,33 @@ class Plugin {
       // Localize design element JSON.
       global $post;
       $json = get_post_meta( $post->ID, 'json_definition', 1 );
+      $json_def = json_decode( $json );
+
+      var_dump( $post->ID );
+      var_dump( $json );
+      var_dump( $json_def );
+      // die();
+
       $element_tree = new \LuxEditor\ElementTree();
-      $element_tree->import( $json );
+      $element_tree->set_title( $post->post_title );
+      if( ! is_array( $json_def->elements ) || count( $json_def->elements ) < 1 || $json_def->elements[0]->tag === 'null' ) {
+
+        // No elements for tree...
+        $element_tree->set_empty();
+
+      } else {
+
+        $element_tree->import( $json );
+
+      }
+
+      var_dump( $element_tree );
 
       $post_data = array(
         'title' => $post->post_title,
       );
 
-      wp_localize_script( 'lux-editor-parser', 'luxEditorTrees', array( $element_tree ) );
+      wp_localize_script( 'lux-editor-parser', 'luxEditorData', array( 'elementTree' => $element_tree ) );
       wp_localize_script( 'lux-editor-editor', 'luxEditorSaveId', $post->ID );
       wp_localize_script( 'lux-editor-editor', 'luxEditorPostData', $post_data );
       wp_localize_script( 'lux-editor-editor', 'luxEditorAjaxUrl', admin_url('admin-ajax.php') );
@@ -134,6 +153,7 @@ class Plugin {
 
     $response = new \stdClass;
     $response->code = 200;
+    $response->jsonDefinition = get_post_meta( $post_id, 'json_definition', 1 );
     print json_encode( $response );
     die();
 

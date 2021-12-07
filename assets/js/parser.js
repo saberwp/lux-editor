@@ -13,6 +13,9 @@ function luxEditorRenderElement( el, parent ) {
 // Recursively create an element tree from the JSON definition.
 function luxEditorRenderer( elementDefinition, elementParent ) {
 
+  console.log( 'rendering element: ')
+  console.log( elementDefinition )
+
   // Make the tag element.
   let el = document.createElement( elementDefinition.tag );
 
@@ -29,7 +32,6 @@ function luxEditorRenderer( elementDefinition, elementParent ) {
   }
 
   // Parse the styles.
-  console.log( elementDefinition.styles )
   if( elementDefinition.hasOwnProperty( 'styles' ) && null !== elementDefinition.styles && elementDefinition.styles.length > 0 ) {
 
     elementDefinition.styles.forEach( style => {
@@ -100,24 +102,20 @@ function luxEditorRenderer( elementDefinition, elementParent ) {
 }
 
 /* Do rendering of an ElementTree. */
-// Automatic rendering when luxEditorTrees available.
-if( undefined !== luxEditorTrees ) {
+// Automatic rendering when luxEditorTree available.
+if( undefined !== luxEditorData.elementTree ) {
 
-  console.log( luxEditorTrees );
+  console.log( 'auto parsing here...' )
+  console.log( luxEditorData )
 
-  luxEditorTrees.forEach( function( elementTree ) {
+  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
 
-    console.log( 'trees rendering...')
+    luxEditorData.elementTree.elements.forEach( function( elementDefinition ) {
 
-    elementTree.elements.forEach( function( elementDefinition ) {
-
-      luxEditorRenderer( elementDefinition, document.getElementById( 'main' ) );
+      luxEditorRenderer( elementDefinition, document.getElementById( 'lux-editor-canvas' ) );
 
     });
 
-  });
+  }
 
 }
-
-// Setup some data storage.
-window.luxEditorData = {}

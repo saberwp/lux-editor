@@ -1,7 +1,6 @@
 function luxEditorExport() {
 
   console.log( window.luxEditorData )
-  console.log( luxEditorTrees )
 
   const elementId = window.luxEditorData.editorSelectedItem.elementId;
 
