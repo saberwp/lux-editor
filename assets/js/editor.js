@@ -258,8 +258,8 @@ function luxEditorTreeAdd() {
   const treeContainer = document.createElement( 'ul' );
   treeContainer.id = 'lux-editor-editor-tree';
 
-  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
-    luxEditorTreeParseJsonElementsRecursive( luxEditorData.elementTree.elements, treeContainer );
+  if( luxEditorData.hasOwnProperty( 'elements' ) && luxEditorData.elements.length > 0 ) {
+    luxEditorTreeParseJsonElementsRecursive( luxEditorData.elements, treeContainer );
   }
 
   const editorBody = document.getElementById( 'lux-editor-editor-body' );
@@ -472,7 +472,7 @@ function luxEditorFindJsonDefinition( targetId ) {
 
   let jsonElementMatch = false;
 
-  luxEditorData.elementTree.elements.every( element => {
+  luxEditorData.elements.every( element => {
 
     // Try to match the current element.
     if( element.id === targetId ) {
@@ -774,22 +774,33 @@ function luxEditorIdentifierGenerate() {
 
 function luxEditorStoreElement( newElement, parent, position ) {
 
+  if( luxEditorData === '' ) {
+    luxEditorData = {
+      elements: []
+    }
+  }
+
   if( 'lux-editor-canvas' === parent.id ) {
 
-    // Init elements array if not already defined at elementTree root.
-    if( undefined === luxEditorData.elementTree.elements ) {
-      luxEditorData.elementTree.elements = [];
+    // Init elements array if not already defined at element root.
+    if( undefined === luxEditorData.elements ) {
+      luxEditorData.elements = [];
     }
 
     // Store at top level.
-    luxEditorData.elementTree.elements.push( newElement );
+    if( ! luxEditorData.hasOwnProperty( 'elements' ) ) {
+
+      luxEditorData.elements = [];
+    }
+
+    luxEditorData.elements.push( newElement );
 
   }
 
   // Parent is not the top level so we loop over elements to find it.
-  if( luxEditorData.elementTree.hasOwnProperty( 'elements' ) && luxEditorData.elementTree.elements.length > 0 ) {
+  if( luxEditorData.hasOwnProperty( 'elements' ) && luxEditorData.elements.length > 0 ) {
 
-    let jsonElementMatch = luxEditorStoreElementRecursive( luxEditorData.elementTree.elements, parent.id, newElement, position );
+    let jsonElementMatch = luxEditorStoreElementRecursive( luxEditorData.elements, parent.id, newElement, position );
 
   }
 
@@ -850,7 +861,7 @@ function luxEditorElementDeleterClickEvent() {
 
 function luxEditorSaveHandler() {
 
-  setInterval( luxEditorSaveRequest, 10000 );
+  setInterval( luxEditorSaveRequest, 3000 );
 
   function luxEditorSaveRequest() {
 
@@ -862,15 +873,11 @@ function luxEditorSaveHandler() {
       postTitle = luxEditorPostData.title;
     }
 
-    // Debug element tree save.
-    console.log( 'JSON right before stringify and save:' );
-    console.log( luxEditorData.elementTree )
-
     const data = {
       action: 'lux_editor_save_design_element',
       post: luxEditorSaveId,
       postTitle: postTitle,
-      json: JSON.stringify( luxEditorData.elementTree )
+      json: JSON.stringify( luxEditorData )
     }
     jQuery.post( luxEditorAjaxUrl, data, function( response ) {
 
@@ -901,99 +908,155 @@ function luxEditorEditorInit() {
 
 }
 
+function luxEditorRenderElement( el, parent ) {
 
-/* Call the init function. */
-luxEditorEditorInit();
+  if( ! parent ) {
 
+    return;
 
-
-/* Drag and Drop */
-/* This all needs to be reworked... */
-
-function dragAndDrop() {
-  //var acceptableDragList = ['FIGURE', 'FIGCAPTION', 'P', 'H1', 'IMG'];
-  //var acceptableDropList = ['ARTICLE', 'FIGURE'];
-  var acceptableDragList = ['LI'];
-  var acceptableDropList = ['UL'];
-  var ghostElement;
-  var uniqueElementId = 1;
-
-  function dragStartHandle(e) {
-    e.target.style.opacity = 0.4;
-    e.dataTransfer.setData("elementId", e.target.dataset.dragId);
   }
 
-  function dragOverHandle(e) {
-    if(acceptableDropList.indexOf(e.target.nodeName) != -1) {
-      var inserted = false;
-      var cList = e.target.children;
-      if(!cList) {
-        e.target.appendChild(ghostElement);
-        return;
-      }
-      for(var i=0; i<cList.length; i++) {
-        var childPos = cList[i].offsetTop;
-        var parentPos = e.target.offsetTop;
-        if(e.offsetY < childPos - parentPos) {
-          e.target.insertBefore(ghostElement, cList[i]);
-          inserted = true;
-          break;
-        }
-      }
-      if(!inserted) e.target.appendChild(ghostElement);
-    }
-    return false;
-  }
+  parent.appendChild( el );
 
-  function dropHandle(e) {
-    var elementId = e.dataTransfer.getData("elementId");
-    var draggedElement = document.querySelector('[data-drag-id="' + elementId + '"]');
-    if(ghostElement.parentNode) {
-      ghostElement.parentNode.insertBefore(draggedElement, ghostElement);
-    }
-    e.preventDefault();
-  }
-
-  function dragEndHandle(e) {
-    e.target.style.opacity = 1;
-    setTimeout(function() {
-      if(ghostElement.parentNode) {
-        ghostElement.parentNode.removeChild(ghostElement);
-      }
-    }, 100);
-  }
-
-  function addDragHandle(el) {
-    el.ondragover = dragOverHandle;
-    el.ondrop = dropHandle;
-
-    var cList = el.children;
-    for(var i=0; i<cList.length; i++) {
-      if(acceptableDropList.indexOf(cList[i].nodeName) != -1) {
-        addDragHandle(cList[i]);
-      }
-      if(acceptableDragList.indexOf(cList[i].nodeName) != -1) {
-        cList[i].ondragstart = dragStartHandle;
-        cList[i].ondragend = dragEndHandle;
-        cList[i].draggable = true;
-        cList[i].dataset.dragId = uniqueElementId++;
-      }
-    }
-    ghostElement = document.createElement("div");
-    ghostElement.className = 'ghost';
-    ghostElement.innerHTML = 'Drop here';
-  }
-
-  function init(querySelectString) {
-    var el = document.querySelector(querySelectString);
-    addDragHandle(el);
-  }
-
-  return {
-    init: init
-  }
 }
 
+// Recursively create an element tree from the JSON definition.
+function luxEditorRenderer( elementDefinition, elementParent ) {
 
-var dragObj = dragAndDrop();
-dragObj.init('#lux-editor-editor-tree');
+  // Make the tag element.
+  let el = document.createElement( elementDefinition.tag );
+
+  // Set element ID.
+  if( elementDefinition.id ) {
+
+    el.id = elementDefinition.id;
+
+  }
+
+  // Set content as innerHTML if available.
+  if( elementDefinition.content ) {
+    el.innerHTML = elementDefinition.content;
+  }
+
+  // Parse the styles.
+  if( elementDefinition.hasOwnProperty( 'styles' ) && null !== elementDefinition.styles && elementDefinition.styles.length > 0 ) {
+
+    elementDefinition.styles.forEach( style => {
+
+      el.style[ style.selector ] = style.value;
+
+    });
+
+  }
+
+  // Loop over the element types and do element structure creation.
+  switch( elementDefinition.tag ) {
+
+    case 'div':
+
+      // Add a CSS class.
+      if( elementDefinition.classes ) {
+        el.className = elementDefinition.classes;
+      }
+
+      break;
+
+    case 'ul':
+
+
+      break;
+
+    case 'li':
+
+
+      break;
+
+    case 'h2':
+
+
+
+    case 'img':
+
+      el.setAttribute( 'src', elementDefinition.src );
+      break;
+
+    case 'a':
+
+      el.setAttribute( 'href', elementDefinition.href );
+      el.innerHTML = elementDefinition.content;
+      break;
+
+  }
+
+  // Render current element.
+  if( elementParent ) {
+    luxEditorRenderElement( el, elementParent );
+  }
+
+  // Recurse over child elements.
+  if( elementDefinition.hasOwnProperty( 'elements' ) && elementDefinition.elements.length > 0 ) {
+
+    elementDefinition.elements.forEach( childElementDefinition => {
+
+      luxEditorRenderer( childElementDefinition, el );
+
+    });
+
+  }
+
+  return el;
+
+}
+
+// Automatic rendering when luxEditorTree available.
+if( undefined !== luxEditorData && luxEditorData.hasOwnProperty( 'elements' ) && luxEditorData.elements !== null && luxEditorData.elements.length > 0 ) {
+
+  console.log( luxEditorData )
+
+  luxEditorData.elements.forEach( function( elementDefinition ) {
+
+    luxEditorRenderer( elementDefinition, document.getElementById( 'lux-editor-canvas' ) );
+
+  });
+
+}
+
+function luxEditorExport() {
+
+  const elementId = window.luxEditorData.editorSelectedItem.elementId;
+
+  // Get JSON definition by ElementId.
+  const jsonDef = luxEditorFindJsonDefinition( elementId );
+  const exportEl = document.createElement( 'pre' );
+  exportEl.innerHTML = JSON.stringify( jsonDef, undefined, 2 );
+
+  const data = {
+    action: 'lux_editor_save_design_element',
+    json: JSON.stringify( jsonDef )
+  }
+  jQuery.post( luxEditorAjaxUrl, data, function( response ) {
+
+
+  });
+
+}
+
+function luxEditorExportClickEvent() {
+
+  const exportButton = document.getElementById( 'lux-editor-editor-export' );
+
+  if( ! exportButton ) {
+    return;
+  }
+
+  exportButton.addEventListener( 'click', event => {
+
+    luxEditorExport()
+
+  });
+
+}
+
+/* Init. */
+luxEditorEditorInit();
+luxEditorExportClickEvent();

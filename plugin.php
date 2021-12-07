@@ -33,7 +33,6 @@ class Plugin {
     require_once( LUX_EDITOR_PATH . 'inc/post-type-design-element.php' );
 
     // AJAX hook to save the Design Element posts.
-    add_action( 'wp_ajax_nopriv_lux_editor_save_design_element', [ $this, 'save_design_element' ] );
     add_action( 'wp_ajax_lux_editor_save_design_element', [ $this, 'save_design_element' ] );
 
     /* Enqueue styles. */
@@ -46,48 +45,36 @@ class Plugin {
 
       wp_enqueue_style(
         'lux-editor-css',
-        LUX_EDITOR_URL . '/assets/css/main.css',
+        LUX_EDITOR_URL . 'assets/css/main.css',
         array(),
         time(),
         'all',
       );
 
       wp_enqueue_script(
-        'lux-editor-parser',
-        LUX_EDITOR_URL . '/assets/js/parser.js',
-        array(),
-        time(),
-        true,
-      );
-
-      wp_enqueue_script(
-        'lux-editor-editor',
-        LUX_EDITOR_URL . '/assets/js/editor.js',
-        array( 'jquery', 'lux-editor-parser' ),
-        time(),
-        true,
-      );
-
-      wp_enqueue_script(
-        'lux-editor-exporter',
-        LUX_EDITOR_URL . '/assets/js/exporter.js',
-        array( 'jquery', 'lux-editor-editor' ),
+        'lux-editor',
+        LUX_EDITOR_URL . 'assets/js/editor.js',
+        array( 'jquery' ),
         time(),
         true,
       );
 
       // Localize design element JSON.
       global $post;
-      $json = get_post_meta( $post->ID, 'json_definition', 1 );
+      $lux_editor_data = array();
 
-      $post_data = array(
-        'title' => $post->post_title,
-      );
+      $json_definition_raw = get_post_meta( $post->ID, 'json_definition', 1 );
+      $json_definition_clean = stripslashes( $json_definition_raw );
+      $elements = json_decode( $json_definition_clean );
+      if( ! $elements ) {
+        $elements = [];
+      }
 
-      wp_localize_script( 'lux-editor-parser', 'luxEditorData', array( 'elementTree' => $json ) );
-      wp_localize_script( 'lux-editor-editor', 'luxEditorSaveId', $post->ID );
-      wp_localize_script( 'lux-editor-editor', 'luxEditorPostData', $post_data );
-      wp_localize_script( 'lux-editor-editor', 'luxEditorAjaxUrl', admin_url('admin-ajax.php') );
+      $lux_editor_data['elements'] = $elements;
+      $lux_editor_data['title']    = $post->post_title;
+      $lux_editor_data['id']       = $post->ID;
+      wp_localize_script( 'lux-editor', 'luxEditorData', $lux_editor_data );
+      wp_localize_script( 'lux-editor', 'luxEditorAjaxUrl', admin_url('admin-ajax.php') );
 
     });
 
@@ -110,15 +97,6 @@ class Plugin {
     $post_title = $_POST['postTitle'];
     $json       = $_POST['json'];
 
-    /**
-     * Please move me, I make new design element post!
-    $post_id = wp_insert_post(
-      array(
-        'post_type'   => 'design_element',
-        'post_status' => 'publish'
-      )
-    );
-    */
     wp_update_post( array(
         'ID'         => $post_id,
         'post_title' => $post_title
