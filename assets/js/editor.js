@@ -690,6 +690,9 @@ function luxEditorInserterConfirmButtonEvent() {
     const positionChoiceEl = document.querySelector( '#lux-editor-editor-insert-position-choices li.is-selected' );
     const positionChoice = positionChoiceEl.getAttribute( 'data-position' );
 
+    console.log( 'positionChoice:' )
+    console.log( positionChoice )
+
     // Insert the new element into the DOM.
     const insertTag = document.getElementById( 'lux-editor-tag-input' ).value;
     if( insertTag === 'text' ) {
@@ -804,7 +807,15 @@ function luxEditorStoreElementRecursive( elements, targetId, newElement, positio
 
   let jsonElementMatch = false;
 
+  console.log( 'Elements list passed into recursive:')
+  console.log( elements )
+
   elements.forEach( element => {
+
+    console.log( 'we are in foreach for one element')
+    console.log( element )
+    console.log( 'targetId is '+targetId)
+    console.log( 'element.id is '+ element.id)
 
     if( targetId === element.id ) {
 
@@ -821,7 +832,14 @@ function luxEditorStoreElementRecursive( elements, targetId, newElement, positio
     }
 
     if( ! jsonElementMatch && undefined !== element.elements && element.elements.length > 0 ) {
-      jsonElementMatch = luxEditorFindJsonDefinitionRecursive( element.elements, targetId );
+
+      console.log( 'there was a recursive call made here...')
+      jsonElementMatch = luxEditorStoreElementRecursive( element.elements, targetId, newElement, position );
+
+    } else {
+
+      console.log( 'there was no recursive here...')
+
     }
 
   });
@@ -868,8 +886,6 @@ function luxEditorSaveRequest() {
   } else {
     postTitle = luxEditorData.title;
   }
-
-  console.log( luxEditorData )
 
   const data = {
     action: 'lux_editor_save_design_element',
@@ -1006,8 +1022,6 @@ function luxEditorRenderer( elementDefinition, elementParent ) {
 
 // Automatic rendering when luxEditorTree available.
 if( undefined !== luxEditorData && luxEditorData.hasOwnProperty( 'elements' ) && luxEditorData.elements !== null && luxEditorData.elements.length > 0 ) {
-
-  console.log( luxEditorData )
 
   luxEditorData.elements.forEach( function( elementDefinition ) {
 
