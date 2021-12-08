@@ -63,10 +63,9 @@ class Plugin {
       global $post;
       $lux_editor_data = array();
 
-      $json_definition_raw = get_post_meta( $post->ID, 'json_definition', 1 );
-      $json_definition_clean = stripslashes( $json_definition_raw );
-      $elements = json_decode( $json_definition_clean );
-      if( ! $elements ) {
+      $elements_raw = get_post_meta( $post->ID, 'json_definition', 1 );
+      $elements = json_decode( $elements_raw );
+      if( ! is_array( $elements ) || empty( $elements ) ) {
         $elements = [];
       }
 
@@ -93,21 +92,21 @@ class Plugin {
 
   public function save_design_element() {
 
-    $post_id    = $_POST['post'];
-    $post_title = $_POST['postTitle'];
-    $json       = $_POST['json'];
+    $id            = $_POST['id'];
+    $title         = $_POST['title'];
+    $elements      = $_POST['elements'];
 
     wp_update_post( array(
-        'ID'         => $post_id,
-        'post_title' => $post_title
+        'ID'         => $id,
+        'post_title' => $title
       )
     );
 
-    update_post_meta( $post_id, 'json_definition', $json );
+    update_post_meta( $id, 'json_definition', $elements );
 
     $response = new \stdClass;
     $response->code = 200;
-    $response->jsonDefinition = get_post_meta( $post_id, 'json_definition', 1 );
+    $response->elements = get_post_meta( $id, 'json_definition', 1 );
     print json_encode( $response );
     die();
 

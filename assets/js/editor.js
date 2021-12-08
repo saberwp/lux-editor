@@ -80,7 +80,7 @@ function luxEditorMenuClickElement() {
       let titleField = document.createElement( 'input' );
       titleField.id = 'lux-editor-element-title-field';
       titleField.placeholder = 'Enter the design element title';
-      titleField.value = luxEditorPostData.title;
+      titleField.value = luxEditorData.title;
       const editorEl = document.getElementById( 'lux-editor-editor' );
       editorEl.appendChild( titleField );
 
@@ -100,7 +100,7 @@ function luxEditorTitleFieldRemove() {
   const titleFieldExists = document.getElementById( 'lux-editor-element-title-field' );
   if( titleFieldExists ) {
 
-    luxEditorPostData.title = titleFieldExists.value; // Stash value before removing.
+    luxEditorData.title = titleFieldExists.value; // Stash value before removing.
     titleFieldExists.remove();
 
   }
@@ -774,12 +774,6 @@ function luxEditorIdentifierGenerate() {
 
 function luxEditorStoreElement( newElement, parent, position ) {
 
-  if( luxEditorData === '' ) {
-    luxEditorData = {
-      elements: []
-    }
-  }
-
   if( 'lux-editor-canvas' === parent.id ) {
 
     // Init elements array if not already defined at element root.
@@ -861,33 +855,35 @@ function luxEditorElementDeleterClickEvent() {
 
 function luxEditorSaveHandler() {
 
-  setInterval( luxEditorSaveRequest, 3000 );
-
-  function luxEditorSaveRequest() {
-
-    // Get the design element title.
-    const titleField = document.getElementById( 'lux-editor-element-title-field' );
-    if( titleField ) {
-      postTitle = value;
-    } else {
-      postTitle = luxEditorPostData.title;
-    }
-
-    const data = {
-      action: 'lux_editor_save_design_element',
-      post: luxEditorSaveId,
-      postTitle: postTitle,
-      json: JSON.stringify( luxEditorData )
-    }
-    jQuery.post( luxEditorAjaxUrl, data, function( response ) {
-
-
-
-    });
-
-  } /* End save request. */
+  setInterval( luxEditorSaveRequest, 5000 );
 
 }
+
+function luxEditorSaveRequest() {
+
+  // Get the design element title.
+  const titleField = document.getElementById( 'lux-editor-element-title-field' );
+  if( titleField ) {
+    postTitle = value;
+  } else {
+    postTitle = luxEditorData.title;
+  }
+
+  console.log( luxEditorData )
+
+  const data = {
+    action: 'lux_editor_save_design_element',
+    id: luxEditorData.id,
+    title: luxEditorData.title,
+    elements: JSON.stringify( luxEditorData.elements ),
+  }
+  jQuery.post( luxEditorAjaxUrl, data, function( response ) {
+
+
+
+  });
+
+} /* End save request. */
 
 function luxEditorEditorInit() {
 
