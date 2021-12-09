@@ -241,6 +241,10 @@
   opacity: 0.7;
 }
 
+#lux-editor-editor-body {
+  padding: 25px 10px;
+}
+
 #lux-editor-editor-body h2 {
   font-size: 18px;
   font-weight: 500;
@@ -249,4 +253,9 @@
 
 .lux-editor-styles-input-group {
   margin: 16px 0;
+}
+
+textarea#lux-editor-element-content-field {
+  height: 120px;
+  padding: 8px;
 }

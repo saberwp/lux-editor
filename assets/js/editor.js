@@ -47,6 +47,7 @@ function luxEditorMenuClickTree() {
       luxEditorInserterRemove();
       luxEditorInserterFormRemove();
       luxEditorTitleFieldRemove();
+      luxEditorSectionTextContentRemove();
 
       // Build tree then add click event handler.
       luxEditorTreeAdd();
@@ -206,7 +207,9 @@ function luxEditorTreeItemClickEvent() {
 
 }
 
-function luxEditorEditElementButtonClickEvent( jsonElementMatch ) {
+function luxEditorEditElementButtonClickEvent( element ) {
+
+  console.log( element )
 
   const el = document.getElementById( 'lux-editor-edit-element-button' );
   el.addEventListener( 'click', event => {
@@ -216,10 +219,125 @@ function luxEditorEditElementButtonClickEvent( jsonElementMatch ) {
     luxEditorTreeRemove();
     luxEditorInserterRemove();
 
-    const styleInputs = luxEditorBuildStyleInputs( jsonElementMatch );
+    // Get the editor body container element.
     const editorBodyEl = document.getElementById( 'lux-editor-editor-body' );
+
+    /* Render attribute editor section. */
+    luxEditorSectionAttributes( element );
+
+    /* Render text content field. */
+    luxEditorSectionTextContent( element );
+
+    /* Render the style inputs. */
+    const styleInputs = luxEditorBuildStyleInputs( element );
     editorBodyEl.appendChild( styleInputs );
     luxEditorStyleInputBlur(); // Attach blur event to process inputs.
+
+  });
+
+}
+
+function luxEditorSectionAttributes( element ) {
+
+  /* Remove the section if it already exists. */
+  const existingEl = document.getElementById( 'lux-editor-section-attributes' );
+  if( existingEl ) {
+    existingEl.remove();
+  }
+
+  const editorBodyEl = document.getElementById( 'lux-editor-editor-body' );
+
+  const sectionContainerEl = document.createElement( 'section' );
+  sectionContainerEl.id = 'lux-editor-section-attributes';
+
+  const sectionHeading = document.createElement( 'h2' );
+  sectionHeading.innerHTML = 'Attributes';
+  sectionContainerEl.appendChild( sectionHeading );
+
+  console.log( element )
+
+  // Add image source for img tag elements.
+  if( 'img' === element.tag ) {
+    const srcLabel = document.createElement( 'label' );
+    srcLabel.innerHTML = "Image Source";
+    sectionContainerEl.appendChild( srcLabel );
+    const srcInput = document.createElement( 'input' );
+    srcInput.id = 'lux-editor-image-src-input';
+    srcInput.placeholder = "Enter image URL.";
+    sectionContainerEl.appendChild( srcInput );
+  }
+
+  const sectionDivider = document.createElement( 'hr' );
+  sectionContainerEl.appendChild( sectionDivider );
+
+  editorBodyEl.appendChild( sectionContainerEl );
+
+  // Add event listener to the blur event for this input.
+  const srcInputEl = document.getElementById( 'lux-editor-image-src-input' );
+  srcInputEl.addEventListener( 'blur', ( event ) => {
+
+    element.src = event.target.value;
+
+  });
+
+
+}
+
+/* Content input element handler functions. */
+
+function luxEditorSectionTextContent( element ) {
+
+  /* Remove the section if it already exists. */
+  luxEditorSectionTextContentRemove();
+
+  const sectionEl = document.createElement( 'section' );
+  sectionEl.id = 'lux-editor-section-content-field';
+
+  const editorBodyEl = document.getElementById( 'lux-editor-editor-body' );
+
+  const contentFieldLabel = document.createElement( 'label' );
+  contentFieldLabel.innerHTML = 'Content';
+  contentFieldLabel.setAttribute( 'for', 'lux-editor-element-content-field' );
+  sectionEl.appendChild( contentFieldLabel );
+
+  const contentField = document.createElement( 'textarea' );
+  contentField.id = 'lux-editor-element-content-field';
+  sectionEl.appendChild( contentField );
+
+  // Add section to the editor body.
+  editorBodyEl.appendChild( sectionEl );
+
+  // Attach the input event.
+  luxEditorContentInputEvent( element );
+
+}
+
+function luxEditorSectionTextContentRemove() {
+
+  const existingEl = document.getElementById( 'lux-editor-section-content-field' );
+  if( existingEl ) {
+    existingEl.remove();
+  }
+
+}
+
+function luxEditorContentInputEvent( jsonElement ) {
+
+  const el = document.getElementById( 'lux-editor-element-content-field' );
+
+  el.addEventListener( 'keyup', ( event ) => {
+
+    const content = el.value;
+
+    // Add content to the JSON definition.
+    jsonElement.content = content;
+
+    console.log( jsonElement )
+
+    const targetEl = document.getElementById( jsonElement.id );
+
+    // Add text content to the target element.
+    targetEl.innerHTML = content;
 
   });
 
@@ -405,7 +523,7 @@ function luxEditorStyleInputBlur() {
 function luxEditorSaveStyle( event ) {
 
   const inputEl = event.target;
-  const inputValue = inputEl.value;
+  const inputValue =a inputEl.value;
   const targetId = inputEl.getAttribute( 'data-target' );
   const targetSelector = inputEl.getAttribute( 'data-target-selector' );
 
