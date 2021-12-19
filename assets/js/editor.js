@@ -264,6 +264,7 @@ function luxEditorSectionAttributes( element ) {
     const srcInput = document.createElement( 'input' );
     srcInput.id = 'lux-editor-image-src-input';
     srcInput.placeholder = "Enter image URL.";
+    srcInput.setAttribute( 'data-target', element.id );
     sectionContainerEl.appendChild( srcInput );
   }
 
@@ -276,7 +277,16 @@ function luxEditorSectionAttributes( element ) {
   const srcInputEl = document.getElementById( 'lux-editor-image-src-input' );
   srcInputEl.addEventListener( 'blur', ( event ) => {
 
-    element.src = event.target.value;
+    const inputEl = event.target;
+    element.src = inputEl.value;
+
+    // Get element being saved.
+    const targetId = inputEl.getAttribute( 'data-target' );
+    const jsonElementMatch = luxEditorFindJsonDefinition( targetId );
+
+    const targetEl = document.getElementById( targetId );
+    targetEl.src = element.src;
+
 
   });
 
@@ -523,7 +533,7 @@ function luxEditorStyleInputBlur() {
 function luxEditorSaveStyle( event ) {
 
   const inputEl = event.target;
-  const inputValue =a inputEl.value;
+  const inputValue = inputEl.value;
   const targetId = inputEl.getAttribute( 'data-target' );
   const targetSelector = inputEl.getAttribute( 'data-target-selector' );
 

@@ -1,14 +1,25 @@
 #lux-editor-editor-tree {
 
   overflow-y: scroll;
+  min-height: 200px;
   max-height: 60vh;
   margin: 20px 10px;
   padding: 0;
 
 }
 
+#lux-editor-editor-tree ul {
+  margin: 0;
+  padding: 0;
+}
+
+#lux-editor-editor-tree ul ul {
+  margin: 0 0 0 12px;
+}
+
 #lux-editor-editor-tree li {
 
+  padding: 0;
   margin: 2px 0;
   font-size: 13px;
 
