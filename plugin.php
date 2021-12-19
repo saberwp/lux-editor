@@ -38,6 +38,15 @@ class Plugin {
     /* Enqueue styles. */
     add_action( 'wp_enqueue_scripts', function() {
 
+      // Enqueue the render script site-wide.
+      wp_enqueue_script(
+        'lux-render',
+        LUX_EDITOR_URL . 'assets/js/render.js',
+        array( 'jquery' ),
+        time(),
+        true,
+      );
+
       // Only add editor to the Design Element single posts.
       if( ! is_singular( 'design_element' ) ) {
     		return;
@@ -88,6 +97,11 @@ class Plugin {
 
     }, 99 );
 
+    /* Add shortcode. */
+    add_action( 'init', function() {
+      $this->shortcode_luxe_element();
+    });
+
   }
 
   public function save_design_element() {
@@ -109,6 +123,31 @@ class Plugin {
     $response->elements = get_post_meta( $id, 'json_definition', 1 );
     print json_encode( $response );
     die();
+
+  }
+
+  public function shortcode_luxe_element() {
+
+    add_shortcode( 'luxe-element', function( $atts ) {
+
+      $atts = shortcode_atts(
+        array(
+          'id' => 0,
+        ), $atts, 'luxe-element'
+      );
+
+      $element_id = $atts['id'];
+      $element_post = get_post( $element_id );
+
+      // Handle no post found for the provided ID.
+      if( ! $element_post || $element_post->post_type !== 'design_element' ) {
+        return "Could not find a LUX Design Element with the specified ID.";
+      }
+
+      $jsonDef = get_post_meta( $element_post->ID, 'json_definition', 1 );
+      return '<div class="lux-def" attr-lux-def="' . htmlentities( $jsonDef, ENT_QUOTES, 'UTF-8') . '"></div>';
+
+    });
 
   }
 
